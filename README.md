@@ -32,18 +32,7 @@ RESTful backend for **NovaStore**, a full-stack e-commerce platform. Built with 
 
 ## Project Structure
 
-```
-Backend store/
-├── controllers/       # Route handler logic
-├── middleware/         # Auth guards, error handler, upload config
-├── models/              # Mongoose schemas (User, Product, Category, Cart, Order, Contact)
-├── routes/                # API route definitions
-├── utils/                   # Helper utilities (email sender)
-├── public/uploads/           # Uploaded product/category images
-├── app.js                       # Express app configuration
-└── server.js                     # Entry point — DB connection + server start
-```
-
+يُرجى استخدام الرمز البرمجي بحذر.Backend store/├── controllers/       # Route handler logic├── middleware/         # Auth guards, error handler, upload config├── models/              # Mongoose schemas (User, Product, Category, Cart, Order, Contact)├── routes/                # API route definitions├── utils/                   # Helper utilities (email sender)├── public/uploads/           # Uploaded product/category images├── app.js                       # Express app configuration└── server.js                     # Entry point — DB connection + server start
 ## Getting Started
 
 ### Prerequisites
@@ -106,4 +95,4 @@ All state-changing and privileged routes are protected with `authUser` / `authAd
 
 ## Author
 
-**Mustafa Kullab** — University web application development coursework project.
+**Mustafa Kullab** — Built as a personal project to apply and deepen Express/Node.js skills after completing backend fundamentals.
