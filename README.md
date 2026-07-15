@@ -97,4 +97,4 @@ All state-changing and privileged routes are protected with `authUser` / `authAd
 
 ## Author
 
-**Mustafa Kullab** — University web application development coursework project.
+**Mustafa Kullab** — Built as a personal project to apply and deepen Express/Node.js skills after completing backend fundamentals.
