@@ -48,21 +48,6 @@ cd novastore-backend
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-MONGO_URI=your_mongodb_connection_string
-PORT=7000
-EMAIL=your_email@gmail.com
-EMAIL_PASS=your_email_app_password
-ACCESS_TOKEN=your_access_token_secret
-REFRESH_TOKEN=your_refresh_token_secret
-```
-
-> ⚠️ Never commit `.env` — it's already covered by `.gitignore`.
-
 ### Run the server
 
 ```bash
