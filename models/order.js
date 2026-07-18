@@ -32,16 +32,12 @@ const orderSchema = new Schema({
     default: "pending",
   },
   createdAt: {
-    type: String,
-    default: () => new Date().toLocaleDateString("en-GB"),
+    type: Date,
+    default: () => Date.now(),
   },
   time: {
-    type: String,
-    default: () =>
-      new Date().toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+    type: Date,
+    default: () => Date.now(),
   },
 });
 

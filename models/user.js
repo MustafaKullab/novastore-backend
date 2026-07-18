@@ -33,8 +33,8 @@ const userSchema = new Schema({
     default: null,
   },
   joinedAt: {
-    type: String,
-    default: () => new Date().toLocaleDateString("en-GB"),
+    type: Date,
+    default: () => Date.now(),
   },
   isVerified: {
     type: Boolean,

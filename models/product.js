@@ -27,8 +27,8 @@ const productSchema = new Schema({
     ref: "category",
   },
   createdAt: {
-    type: String,
-    default: () => new Date().toLocaleDateString("en-GB"),
+    type: Date,
+    default: () => Date.now(),
   },
 });
 

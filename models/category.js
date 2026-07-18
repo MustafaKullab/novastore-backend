@@ -25,8 +25,8 @@ const categorySchema = new Schema({
   },
 
   createdAt: {
-    type: String,
-    default: () => new Date().toLocaleDateString("en-GB"),
+    type: Date,
+    default: () => Date.now(),
   },
 });
 

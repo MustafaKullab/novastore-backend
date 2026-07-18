@@ -29,13 +29,13 @@ const contactSchema = new Schema({
     enum: ["Read", "Unread"],
     default: "Unread",
   },
-  isRelpied: {
+  isReplied: {
     type: Boolean,
     default: false,
   },
   createdAt: {
-    type: String,
-    default: () => new Date().toLocaleDateString("en-GB"),
+    type: Date,
+    default: () => new Date(),
   },
 });
 

@@ -16,9 +16,14 @@ const authUser = async (req, res, next) => {
     } else {
       try {
         req.user = await User.findById(decodeURI.id);
+        if (!req.user) {
+          return res
+            .status(401)
+            .json({ success: false, message: "User not found" });
+        }
         next();
       } catch (error) {
-        console.log(error);
+        return next(error);
       }
     }
   });

@@ -2,10 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-const rateLimit = require("express-rate-limit");
 const router = require("./routes/router");
 const cookieParser = require("cookie-parser");
 const handleError = require("./middleware/handlerError");
+const { generalRateLimit } = require("./middleware/rateLimit");
 
 const app = express();
 
@@ -23,13 +23,7 @@ app.use(
 );
 
 //Prevent too many requests
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: "Too many request, please try again later",
-  })
-);
+app.use(generalRateLimit);
 
 // Parse incoming JSON payloads
 app.use(express.json());

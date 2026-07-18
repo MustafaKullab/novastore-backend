@@ -4,42 +4,70 @@ const upload = require("../middleware/upload");
 const { body } = require("express-validator");
 const authUser = require("../middleware/authUser");
 const authAdmin = require("../middleware/authAdmin");
+const { authRateLimit } = require("../middleware/rateLimit");
 
 const {
   post_signup,
   post_verify,
-  post_user,
   post_login,
   post_forgotPassword,
   post_resetPassword,
   post_resetProfilePassword,
+  post_refresh,
+  post_logout,
+} = require("../controllers/authController.js");
+
+const {
+  post_user,
   GET_getUser,
   GET_users,
   delete_user,
   Patch_changeUsername,
+  GET_totalUsers,
+} = require("../controllers/userController.js");
+
+const {
   post_addCategory,
   patch_changeStateCategory,
   delete_category,
   GET_categories,
+  GET_totalCategories,
+} = require("../controllers/categoryController.js");
+
+const {
   post_addProduct,
   GET_productDetails,
   put_editProduct,
   delete_deleteProduct,
   patch_delImgProduct,
   GET_totalProducts,
-  GET_totalOrders,
-  GET_totalUsers,
-  GET_revenue,
-  GET_latestOrders,
-  GET_recentMessages,
   GET_lowStockProducts,
+  Get_products,
+  post_productDetail,
+  GET_outOfStockProducts,
+} = require("../controllers/productController.js");
+
+const {
   post_addToCart,
   post_rmvFromCart,
   post_decreaseQuantity,
+  Get_cart,
+} = require("../controllers/cartController.js");
+
+const {
   post_order,
+  GET_latestOrders,
   post_getOrder,
+  GET_totalOrders,
+  GET_revenue,
   patch_updateStatus,
+  GET_allOrders,
+  GET_allOrdersAllUsers,
   delete_order,
+} = require("../controllers/orderController.js");
+
+const {
+  GET_recentMessages,
   post_successMessage,
   GET_messages,
   GET_specificMessage,
@@ -47,17 +75,8 @@ const {
   delete_message,
   post_sendReply,
   patch_readMessage,
-  Get_products,
-  GET_outOfStockProducts,
-  GET_totalCategories,
-  Get_cart,
-  GET_allOrders,
-  GET_allOrdersAllUsers,
-  post_productDetail,
   post_contactMsg,
-  post_refresh,
-  post_logout,
-} = require("../controllers/controller");
+} = require("../controllers/contactController.js");
 
 //Router to sign new user
 router.post(
@@ -87,6 +106,7 @@ router.post(
       .withMessage("Confirm password is required")
       .trim(),
   ],
+  authRateLimit,
   post_signup
 );
 
@@ -100,22 +120,35 @@ router.post("/getUser", post_user);
 router.patch("/changeUsername", authUser, Patch_changeUsername);
 
 //Router to login user
-router.post("/login", post_login);
+router.post(
+  "/login",
+  authRateLimit,
+  [
+    body("email").notEmpty().withMessage("Email is required").trim().escape(),
+    body("password").notEmpty().withMessage("Password is required"),
+  ],
+  post_login
+);
 
 // Router forgot password
-router.post("/forgotPassword", post_forgotPassword);
+router.post("/forgotPassword", authRateLimit, post_forgotPassword);
 
 // Router to reset the password
-router.post("/resetPassword", post_resetPassword);
+router.post("/resetPassword", authRateLimit, post_resetPassword);
 
 // Router to reset password from profile
-router.post("/resetPassFromProfile", authUser, post_resetProfilePassword);
+router.post(
+  "/resetPassFromProfile",
+  authRateLimit,
+  authUser,
+  post_resetProfilePassword
+);
 
 // Router to get the current user
 router.get("/getUser", authUser, GET_getUser);
 
 //Router to get the users
-router.get("/getUsers", authUser, authAdmin("admin"), authUser, GET_users);
+router.get("/getUsers", authUser, authAdmin("admin"), GET_users);
 
 // Router to delete user
 router.delete("/deleteUser/:userId", authUser, authAdmin("admin"), delete_user);
@@ -126,6 +159,18 @@ router.post(
   upload.single("image"),
   authUser,
   authAdmin("admin"),
+  [
+    body("name")
+      .notEmpty()
+      .withMessage("Category name is required")
+      .escape()
+      .trim(),
+    body("description")
+      .notEmpty()
+      .withMessage("Category description is required")
+      .escape()
+      .trim(),
+  ],
   post_addCategory
 );
 
@@ -154,11 +199,38 @@ router.post(
   upload.single("image"),
   authUser,
   authAdmin("admin"),
+  [
+    body("name")
+      .notEmpty()
+      .withMessage("Product name is required")
+      .escape()
+      .trim(),
+    body("description")
+      .notEmpty()
+      .withMessage("Product description is required")
+      .escape()
+      .trim(),
+    body("price")
+      .notEmpty()
+      .withMessage("Product price is required")
+      .isFloat({ min: 0 })
+      .withMessage("Price must be a positive number"),
+    body("stock")
+      .notEmpty()
+      .withMessage("Product stock is required")
+      .isInt({ min: 0 })
+      .withMessage("Stock must be a positive number "),
+    body("categoryId")
+      .notEmpty()
+      .withMessage("Product Category is required")
+      .escape()
+      .trim(),
+  ],
   post_addProduct
 );
 
 // Router to get the product details
-router.get("/getProduct/:productId", authUser, GET_productDetails);
+router.get("/getProduct/:productId", GET_productDetails);
 
 // Router to edit the information of products
 router.put(
@@ -166,6 +238,33 @@ router.put(
   upload.single("image"),
   authUser,
   authAdmin("admin"),
+  [
+    body("name")
+      .notEmpty()
+      .withMessage("Product name is required")
+      .escape()
+      .trim(),
+    body("description")
+      .notEmpty()
+      .withMessage("Product description is required")
+      .escape()
+      .trim(),
+    body("price")
+      .notEmpty()
+      .withMessage("Product price is required")
+      .isFloat({ min: 0 })
+      .withMessage("Price must be a positive number"),
+    body("stock")
+      .notEmpty()
+      .withMessage("Product stock is required")
+      .isInt({ min: 0 })
+      .withMessage("Stock must be a positive number "),
+    body("categoryId")
+      .notEmpty()
+      .withMessage("Product Category is required")
+      .escape()
+      .trim(),
+  ],
   put_editProduct
 );
 
@@ -186,16 +285,16 @@ router.delete(
 );
 
 // Router to get total products
-router.get("/totalProducts", authUser, GET_totalProducts);
+router.get("/totalProducts", authUser, authAdmin("admin"), GET_totalProducts);
 
 // Router to get total orders
-router.get("/totalOrders", authUser, GET_totalOrders);
+router.get("/totalOrders", authUser, authAdmin("admin"), GET_totalOrders);
 
 // Router to get total users
-router.get("/totalUsers", authUser, GET_totalUsers);
+router.get("/totalUsers", authUser, authAdmin("admin"), GET_totalUsers);
 
 // Router to get revenue of orders
-router.get("/revenue", authUser, authAdmin("admin"), authUser, GET_revenue);
+router.get("/revenue", authUser, authAdmin("admin"), GET_revenue);
 
 // Router to get the latest 5 orders
 router.get("/latestOrders", authUser, authAdmin("admin"), GET_latestOrders);
@@ -224,7 +323,7 @@ router.post("/decreaseQuantity", authUser, post_decreaseQuantity);
 router.post("/confOrder", authUser, post_order);
 
 // Router to get the order success
-router.post("/getOrder", authUser, authAdmin("admin"), post_getOrder);
+router.post("/getOrder", authUser, post_getOrder);
 
 // Router to change the status of order
 router.patch(
@@ -277,10 +376,20 @@ router.patch("/readMessage", authUser, authAdmin("admin"), patch_readMessage);
 router.get("/products", Get_products);
 
 // Router to get out of stock products
-router.get("/outOfStockProducts", authUser, GET_outOfStockProducts);
+router.get(
+  "/outOfStockProducts",
+  authUser,
+  authAdmin("admin"),
+  GET_outOfStockProducts
+);
 
 // Router to get categories products (length)
-router.get("/lenghCategories", authUser, GET_totalCategories);
+router.get(
+  "/lenghCategories",
+  authUser,
+  authAdmin("admin"),
+  GET_totalCategories
+);
 
 // Router to get cart of user
 router.get("/cart", authUser, Get_cart);
@@ -289,10 +398,10 @@ router.get("/cart", authUser, Get_cart);
 router.get("/allOrders", authUser, GET_allOrders);
 
 // Router to get all orders of all users
-router.get("/orders", authUser, GET_allOrdersAllUsers);
+router.get("/orders", authUser, authAdmin("admin"), GET_allOrdersAllUsers);
 
 // Router to get Product Selector
-router.post("/productDetail", authUser, post_productDetail);
+router.post("/productDetail", post_productDetail);
 
 // Router to recieve the message from customer
 router.post("/contactMessage", authUser, post_contactMsg);
