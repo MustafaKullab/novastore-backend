@@ -90,11 +90,15 @@ const post_verify = async (req, res, next) => {
     // Send Cookies
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -125,11 +129,15 @@ const post_login = async (req, res) => {
     // Send Cookies
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -283,6 +291,8 @@ const post_refresh = (req, res) => {
       const accessToken = createAccessToken(decodedURI.id);
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
+        secure: true,
+        sameSite: "none",
         maxAge: 15 * 60 * 1000,
       });
       res.status(200).json({ success: true });
