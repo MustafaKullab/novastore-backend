@@ -3,7 +3,7 @@ const User = require("../models/user");
 const Order = require("../models/order");
 const Contact = require("../models/contact");
 const sendEmail = require("../utils/sendEmail");
-import { Resend } from "resend";
+const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 const handleErrors = require("../utils/handleErrors.js");
 

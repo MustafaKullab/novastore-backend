@@ -1,7 +1,7 @@
 require("dotenv").config();
 const User = require("../models/user.js");
 const sendEmail = require("../utils/sendEmail.js");
-import { Resend } from "resend";
+const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
