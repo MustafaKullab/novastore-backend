@@ -1,5 +1,8 @@
+require("dotenv").config();
 const User = require("../models/user.js");
 const sendEmail = require("../utils/sendEmail.js");
+import { Resend } from "resend";
+const resend = new Resend(process.env.RESEND_API_KEY);
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const handleErrors = require("../utils/handleErrors.js");
@@ -46,10 +49,11 @@ const post_signup = async (req, res) => {
     });
 
     //Send email
-    await sendEmail({
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: email,
       subject: `مرحبا ${username}, كود تأكيد الحساب`,
-      text: `كود تأكيد حسابك هو ${verificationCode}`,
+      html: `كود تأكيد حسابك هو ${verificationCode}`,
     });
 
     res.status(201).json({ success: true, user });
@@ -166,10 +170,11 @@ const post_forgotPassword = async (req, res, next) => {
     ).toString();
 
     // Send Email
-    await sendEmail({
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: email,
       subject: `مرحبا ${user.username}, كود تغيير كلمة المرور`,
-      text: `كود تغيير كلمة المرور هو : ${resetPasswordCode}`,
+      html: `كود تغيير كلمة المرور هو : ${resetPasswordCode}`,
     });
 
     await User.findByIdAndUpdate(user._id, {

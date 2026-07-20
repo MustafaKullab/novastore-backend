@@ -1,7 +1,10 @@
+require("dotenv").config();
 const User = require("../models/user");
 const Order = require("../models/order");
 const Contact = require("../models/contact");
 const sendEmail = require("../utils/sendEmail");
+import { Resend } from "resend";
+const resend = new Resend(process.env.RESEND_API_KEY);
 const handleErrors = require("../utils/handleErrors.js");
 
 // Function to get recent messages
@@ -27,10 +30,10 @@ const post_successMessage = async (req, res, next) => {
 
     const order = await Order.findById(orderId);
 
-    await sendEmail({
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: user.email,
       subject: "تم استلام طلبك بنجاح | NovaStore",
-      text: "",
       html: `
       <div dir="rtl" style="
       font-family: Arial, Helvetica, sans-serif;
@@ -147,7 +150,8 @@ const post_sendReply = async (req, res, next) => {
   const { fullName, email, reply } = req.body;
 
   try {
-    await sendEmail({
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: email,
       subject: `مرحبا ${fullName}, تلقينا مشكلتك `,
       html: `
@@ -196,7 +200,8 @@ const post_contactMsg = async (req, res, next) => {
       message,
     });
 
-    await sendEmail({
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: contact.email,
       subject: `مرحبا ${contact.fullName}, شكراً لتواصلك معنا، تم استلام رسالتك وسنرد عليك في أقرب وقت.!`,
       html: `

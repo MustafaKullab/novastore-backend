@@ -5,6 +5,9 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
+  tls: {
+    rejectUnauthorized: false, // عشان بالريندر ما ياخد وقت وهو بيتحقق من اللي باعت طلب
+  },
   auth: {
     user: process.env.EMAIL,
     pass: process.env.EMAIL_PASS,
