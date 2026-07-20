@@ -14,10 +14,22 @@ app.use(
   helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false })
 );
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://novastore-frontend-psi.vercel.app",
+];
+
 //Allow the front end to access to the backend
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        // !origin للادوات اللي زي بوستمان
+        callback(true, null);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
