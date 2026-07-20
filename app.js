@@ -17,6 +17,7 @@ app.use(
 const allowedOrigins = [
   "http://localhost:5173",
   "https://novastore-frontend-psi.vercel.app",
+  "https://novastore-frontend-nbuit0wip-mustafa-kullabs-projects.vercel.app/",
 ];
 
 //Allow the front end to access to the backend
