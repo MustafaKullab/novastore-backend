@@ -25,7 +25,7 @@ app.use(
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
         // !origin للادوات اللي زي بوستمان
-        callback(true, null);
+        callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
