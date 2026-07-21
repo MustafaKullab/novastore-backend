@@ -1,6 +1,7 @@
 const Product = require("../models/product.js");
 const fs = require("fs");
 const path = require("path");
+const { validationResult } = require("express-validator");
 
 // Function to delete image
 const deleteImageFile = (imagePath) => {
